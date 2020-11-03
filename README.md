@@ -1,2 +1,2 @@
 # Celestial
-A Music Bot Made Using Erela.js With Few Fun Commands
+Bot For My Private Server, No Urgent Support Will Be Provided.
