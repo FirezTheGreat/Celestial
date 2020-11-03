@@ -1,0 +1,24 @@
+{
+  "name": "celestial",
+  "version": "1.0.0",
+  "description": "Private Bot of Firez for his Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lavalink": "java -jar Lavalink.jar"
+  },
+  "author": "Firez",
+  "license": "Apache-2.0",
+  "repository": {
+    "url": "https://github.com/FirezTheGreat"
+  },
+  "dependencies": {
+    "@discordjs/opus": "^0.3.3",
+    "discord.js": "^12.4.1",
+    "erela.js": "^2.0.1",
+    "glob": "^7.1.6",
+    "node-superfetch": "^0.1.10",
+    "rimraf": "^3.0.2",
+    "spotify-url-info": "^2.0.0"
+  }
+}
