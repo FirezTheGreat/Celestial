@@ -16,12 +16,14 @@ lavalink:
     bufferDurationMs: 400
     youtubePlaylistLoadLimit: 100
     youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
     gc-warnings: false
 
 metrics:
   prometheus:
     enabled: false
     endpoint: /metrics
+
 sentry:
   dsn: ""
 
