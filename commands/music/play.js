@@ -1,7 +1,7 @@
+const Command = require('../../structures/Command');
 const { MessageEmbed } = require('discord.js');
 const play = require('../../structures/music/loadTracks');
 const { getData, getPreview } = require('spotify-url-info');
-const Command = require('../../structures/Command');
 const { Player } = require('erela.js/dist/structures/Player');
 
 module.exports = class Play extends Command {
@@ -32,9 +32,9 @@ module.exports = class Play extends Command {
                     voiceChannel: channel.id,
                     selfDeafen: true,
                 });
+                player.connect();
             };
             if (player.voiceChannel !== channel.id) return message.channel.send("**You Have To Be In The Same Channel With The Bot!**");
-            player.connect();
             if (args[0].startsWith('https://open.spotify.com')) {
                 const data = await getData(args.join(''));
                 if (data.type === 'playlist' || data.type === 'album') {
