@@ -38,17 +38,21 @@ module.exports = class Util {
         const commands = sync(`${this.directory}commands/**/*.mjs`.replace(/\\/g, '/'));
 
         for (const commandFile of commands) {
-            delete require.cache[commandFile];
+            try {
+                delete require.cache[commandFile];
 
-            const { name } = path.parse(commandFile);
-            const { default: File } = require(commandFile);
+                const { name } = path.parse(commandFile);
+                const { default: File } = await import(`file:///${commandFile}`);
 
-            if (!this.isClass(File)) throw new TypeError(`Command ${name} doesn't export a class.`);
+                if (!this.isClass(File)) throw new TypeError(`Command ${name} doesn't export a class.`);
 
-            const command = new File(this.bot, name.toLowerCase());
-            if (!(command instanceof Command)) throw new TypeError(`Command ${name} doesnt belong in Commands.`);
+                const command = new File(this.bot, name.toLowerCase());
+                if (!(command instanceof Command)) throw new TypeError(`Command ${name} doesnt belong in Commands.`);
 
-            this.bot.commands.set(command.name, command);
+                this.bot.commands.set(command.name, command);
+            } catch (error) {
+                console.error(error);
+            };
         };
     };
 
@@ -74,19 +78,33 @@ module.exports = class Util {
         const events = sync(`${this.directory}events/**/*.mjs`.replace(/\\/g, '/'));
 
         for (const eventFile of events) {
-            delete require.cache[eventFile];
+            try {
+                delete require.cache[eventFile];
 
-            const { name } = path.parse(eventFile);
-            const { default: File } = await import(`file:///${eventFile}`);
+                const { name } = path.parse(eventFile);
+                const { default: File } = await import(`file:///${eventFile}`);
 
-            if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);
+                if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);
 
-            const event = new File(this.bot, name.toLowerCase());
+                const event = new File(this.bot, name.toLowerCase());
 
-            if (!(event instanceof Event)) throw new TypeError(`Event ${name} doesn't belong in Events`);
+                if (!(event instanceof Event)) throw new TypeError(`Event ${name} doesn't belong in Events`);
 
-            this.bot.events.set(event.name, event);
-            event.emitter[event.type](name, (...args) => event.EventRun(...args));
+                this.bot.events.set(event.name, event);
+                event.emitter[event.type](name, (...args) => event.EventRun(...args));
+            } catch (error) {
+                console.error(error);
+            };
+        };
+    };
+
+    async error(interaction, error) {
+        if (interaction.deferred && !interaction.replied) {
+            return interaction.editReply({ content: `An Error Occurred: \`${error.message}\`!` });
+        } else if (interaction.replied) {
+            return interaction.followUp({ content: `An Error Occurred: \`${error.message}\`!` });
+        } else {
+            return interaction.reply({ content: `An Error Occurred: \`${error.message}\`!` });
         };
     };
 };
