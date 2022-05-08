@@ -1,5 +1,7 @@
-const Celestial = require('./structures/Celestial');
-const config = require('./config.json');
+(async () => {
+    const { default: Celestial} = await import("./structures/Celestial.mjs");
+    const { default: Config } = await import("./config.mjs");
 
-const bot = new Celestial(config);
-bot.start();
+    const celestial = new Celestial(Config);
+    celestial.start();
+})();
