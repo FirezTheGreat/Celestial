@@ -34,9 +34,13 @@ export default class Celestial extends Client {
     };
 
     async start() {
-        await this.utils.loadCommands();
-        await this.utils.loadEvents();
-        this.mongoose.init();
-        await super.login(this.token);
+        try {
+            await this.utils.loadCommands();
+            await this.utils.loadEvents();
+            this.mongoose.init();
+            await super.login(this.token);
+        } catch (error) {
+            console.error(error);
+        };
     };
 };
