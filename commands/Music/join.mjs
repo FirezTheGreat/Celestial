@@ -1,5 +1,5 @@
 import { getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
-import { ApplicationCommandType } from 'discord.js';
+import { ApplicationCommandType, ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../structures/Command.mjs';
 
 export default class Join extends Command {
@@ -12,6 +12,12 @@ export default class Join extends Command {
         });
     };
 
+    /**
+     * 
+     * @param {ChatInputCommandInteraction} interaction 
+     * @returns Joins or Rejoins VC
+     */
+    
     async InteractionRun(interaction) {
         try {
             if (!interaction.member.voice.channelId) return interaction.reply({ content: '*You need to join a Voice Channel first.*', ephemeral: true });
@@ -19,11 +25,8 @@ export default class Join extends Command {
             await interaction.deferReply();
 
             let connection = getVoiceConnection(interaction.guild.id);
-            if (connection && connection.joinConfig.channelId === interaction.member.voice.channelId) {
-                const has_rejoined = connection.rejoin(connection.joinConfig);
-
-                if (has_rejoined) return await interaction.editReply({ content: `*Rejoined ${interaction.member.voice.channel} Successfully!*` });
-                else return await interaction.editReply({ content: `*Couldn't Rejoin ${interaction.member.voice.channel}!*` });
+            if (connection && connection.joinConfig.channelId === interaction.member.voice.channelId && interaction.guild.me.voice.channelId) {
+                return interaction.editReply({ content: '*I am already connected to the same Voice Channel!*', ephemeral: true });
             } else {
                 connection = joinVoiceChannel({
                     channelId: interaction.member.voice.channelId,

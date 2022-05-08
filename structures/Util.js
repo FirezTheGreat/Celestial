@@ -1,3 +1,4 @@
+const { ChatInputCommandInteraction } = require('discord.js');
 const path = require('path');
 const { sync } = require('glob');
 
@@ -5,6 +6,11 @@ module.exports = class Util {
     constructor(bot) {
         this.bot = bot;
     };
+    /**
+     * 
+     * @param {Function} input 
+     * @returns {boolean} Boolean
+     */
 
     isClass(input) {
         return typeof input === 'function' &&
@@ -16,23 +22,33 @@ module.exports = class Util {
         return `${path.dirname(require.main.filename)}${path.sep}`;
     };
 
+    /**
+     * 
+     * @param {object} command Command Object
+     * @returns Refreshes Command(s)
+     */
+
     async loadCommands(command = null) {
         const { default: Command } = await import('./Command.mjs');
 
         if (command) {
-            const commandFile = sync(`${this.directory}commands/${command.category.split(' ').join('-').toLowerCase()}/${command.name.split(' ').join('-').toLowerCase()}.mjs`.replace(/\\/g, '/'))[0];
+            try {
+                const commandFile = sync(`${this.directory}commands/${command.category.split(' ').join('-').toLowerCase()}/${command.name.split(' ').join('-').toLowerCase()}.mjs`.replace(/\\/g, '/'))[0];
 
-            delete require.cache[commandFile];
+                delete require.cache[commandFile];
 
-            const { name } = path.parse(commandFile);
-            const File = require(commandFile);
+                const { name } = path.parse(commandFile);
+                const { default: File } = await import(`file:///${commandFile}`);
 
-            if (!File) return new Error(`*${name} is not a file constructor*`);
+                if (!File) return new Error(`*${name} is not a file constructor*`);
 
-            const command = new File(this.bot, name.toLowerCase());
-            this.bot.commands.set(command.name, command);
+                const command = new File(this.bot, name.toLowerCase());
+                this.bot.commands.set(command.name, command);
 
-            return command;
+                return command;
+            } catch (error) {
+                return new Error({ code: error.code, message: error.message });
+            };
         };
 
         const commands = sync(`${this.directory}commands/**/*.mjs`.replace(/\\/g, '/'));
@@ -55,24 +71,33 @@ module.exports = class Util {
             };
         };
     };
+    /**
+     * 
+     * @param {object} event Event Object
+     * @returns Refreshes and Loads Event(s)
+     */
 
     async loadEvents(event = null) {
         const { default: Event } = await import('./Event.mjs');
 
         if (event) {
-            const eventFile = sync(`${this.directory}events/${event.category.toLowerCase()}/${event.name}.mjs`.replace(/\\/g, '/'))[0];
+            try {
+                const eventFile = sync(`${this.directory}events/${event.category.toLowerCase()}/${event.name}.mjs`.replace(/\\/g, '/'))[0];
 
-            delete require.cache[eventFile];
+                delete require.cache[eventFile];
 
-            const { name } = path.parse(eventFile);
-            const { default: File } = require(eventFile);
+                const { name } = path.parse(eventFile);
+                const { default: File } = await import(`file:///${eventFile}`);
 
-            if (!File) return new Error(`*${name} is not a file constructor*`);
+                if (!File) return new Error(`*${name} is not a file constructor*`);
 
-            const event = new File(this.bot, name.toLowerCase());
-            this.bot.events.set(event.name, event);
+                const event = new File(this.bot, name.toLowerCase());
+                this.bot.events.set(event.name, event);
 
-            return event;
+                return event;
+            } catch (error) {
+                return new Error({ code: error.code, message: error.message });
+            };
         };
 
         const events = sync(`${this.directory}events/**/*.mjs`.replace(/\\/g, '/'));
@@ -98,13 +123,21 @@ module.exports = class Util {
         };
     };
 
-    async error(interaction, error) {
+    /**
+     * 
+     * @param {ChatInputCommandInteraction} interaction 
+     * @param {Error} error 
+     * @param {boolean} ephemeral 
+     * @returns {string} Error Message
+     */
+
+    async error(interaction, error, ephemeral = false) {
         if (interaction.deferred && !interaction.replied) {
-            return await interaction.editReply({ content: `An Error Occurred: \`${error.message}\`!` });
+            return await interaction.editReply({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
         } else if (interaction.replied) {
-            return await interaction.followUp({ content: `An Error Occurred: \`${error.message}\`!` });
+            return await interaction.followUp({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
         } else {
-            return await interaction.reply({ content: `An Error Occurred: \`${error.message}\`!` });
+            return await interaction.reply({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
         };
     };
 };

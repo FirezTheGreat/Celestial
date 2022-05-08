@@ -1,3 +1,4 @@
+import { Interaction } from 'discord.js';
 import Event from '../../structures/Event.mjs';
 
 export default class interactionCreate extends Event {
@@ -7,6 +8,11 @@ export default class interactionCreate extends Event {
         });
     };
 
+    /**
+     * 
+     * @param {Interaction} interaction 
+     */
+    
     async EventRun(interaction) {
         if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
             const command = this.bot.commands.get(interaction.commandName);
