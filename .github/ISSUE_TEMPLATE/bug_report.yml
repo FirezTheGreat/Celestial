@@ -1,0 +1,35 @@
+name: Bug report
+description: Report incorrect or unexpected behavior of code
+labels: [bug, need repro]
+assignees: 'FirezTheGreat'
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue
+      description: |
+        Describe the issue in detail.
+
+        Tip: You can attach images.
+      placeholder: |
+        Steps to reproduce with below code sample:
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: codesample
+    attributes:
+      label: Code
+      description: Include a reproducible, code sample. Do not use bacticks to format
+      render: TypeScript
+      placeholder: |
+        Use the code that produces the problem 
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
