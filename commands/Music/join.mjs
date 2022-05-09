@@ -1,4 +1,4 @@
-import { getVoiceConnection, joinVoiceChannel } from '@discordjs/voice';
+import { entersState, getVoiceConnection, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 import { ApplicationCommandType, ChatInputCommandInteraction } from 'discord.js';
 import Command from '../../structures/Command.mjs';
 
@@ -17,7 +17,7 @@ export default class Join extends Command {
      * @param {ChatInputCommandInteraction} interaction 
      * @returns Joins or Rejoins VC
      */
-    
+
     async InteractionRun(interaction) {
         try {
             if (!interaction.member.voice.channelId) return interaction.reply({ content: '*You need to join a Voice Channel first.*', ephemeral: true });
@@ -34,7 +34,8 @@ export default class Join extends Command {
                     selfDeaf: false,
                     adapterCreator: interaction.channel.guild.voiceAdapterCreator
                 });
-
+                
+                await entersState(connection, VoiceConnectionStatus.Ready, 5000);                
                 return await interaction.editReply({ content: `*Joined ${interaction.member.voice.channel} Successfully!*` });
             };
         } catch (error) {

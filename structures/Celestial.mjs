@@ -1,5 +1,6 @@
 import { Client, Partials, ActivityType, IntentsBitField, Collection } from "discord.js";
 import Mongoose from "./Mongoose.js";
+import Music from "./MusicManger.mjs";
 import Util from "./Util.js";
 
 export default class Celestial extends Client {
@@ -23,6 +24,7 @@ export default class Celestial extends Client {
         this.commands = new Collection();
         this.events = new Collection();
         this.mongoose = new Mongoose();
+        this.music = new Music(this);
         this.utils = new Util(this);
     };
 
