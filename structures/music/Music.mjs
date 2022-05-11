@@ -45,12 +45,13 @@ export default class Music extends Manager {
                     .setAuthor({ name: track.requester.username, iconURL: requester.displayAvatarURL() })
                     .setTitle('Now Playing')
                     .setColor('Green')
+                    .setDescription(`${bot.utils.formatTime(player.position, true)}/${bot.utils.formatTime(player.queue.duration, true)}\n${bot.utils.progressBar({ position: player.position, duration: track.duration })}`)
                     .setFields([
                         { name: 'Track', value: track.title, inline: true },
                         { name: 'Requester', value: `${requester}`, inline: true },
-                        { name: 'Duration', value: bot.utils.formatTime(track.duration, true), inline: true }
+                        { name: 'Duration', value: bot.utils.formatTime(player.queue.current.duration, true), inline: true }
                     ])
-                    .setThumbnail(`https://i.ytimg.com/vi/${track.identifier}/hqdefault.jpg`)
+                    .setThumbnail(player.queue.current.thumbnail)
                     .setFooter({ text: requester.username, iconURL: requester.displayAvatarURL() })
                     .setTimestamp();
                 // Create Buttons

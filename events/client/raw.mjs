@@ -1,6 +1,6 @@
 import Event from "../../structures/Event.mjs";
 
-export default class raw extends Event {
+export default class Raw extends Event {
     constructor(...args) {
         super(...args, {
             type: 'Guild'

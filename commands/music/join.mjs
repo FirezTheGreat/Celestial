@@ -20,7 +20,7 @@ export default class Join extends Command {
         try {
             if (!interaction.member.voice.channelId) return await interaction.reply({ content: '*Please join a Voice Channel!*', ephemeral: true });
 
-            let player = this.bot.music.get(interaction.guild.id);
+            let player = this.bot.music.get(interaction.guildId);
 
             if (player) {
                 return await interaction.reply({ content: '*I am connected to the same Voice Channel*', ephemeral: true });

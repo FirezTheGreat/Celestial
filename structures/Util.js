@@ -1,6 +1,7 @@
-const { ChatInputCommandInteraction } = require('discord.js');
+const { CommandInteraction } = require('discord.js');
 const path = require('path');
 const { sync } = require('glob');
+const { Player } = require('erela.js');
 
 module.exports = class Util {
     constructor(bot) {
@@ -129,19 +130,23 @@ module.exports = class Util {
 
     /**
      * 
-     * @param {ChatInputCommandInteraction} interaction 
-     * @param {Error} error 
-     * @param {boolean} ephemeral 
+     * @param {CommandInteraction} interaction Interaction
+     * @param {Error} error Error Message
+     * @param {String} custom Custom Error Message
+     * @param {boolean} ephemeral Ephemeral Boolean
      * @returns {string} Error Message
      */
 
-    async error(interaction, error, ephemeral = false) {
+    async error(interaction, error, custom = false, ephemeral = false) {
         if (interaction.deferred && !interaction.replied) {
-            return await interaction.editReply({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
+            await interaction.editReply({ content: `An Error Occurred: \`${error.message}\`!` });
+            return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
         } else if (interaction.replied) {
-            return await interaction.followUp({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
+            await interaction.followUp({ content: `An Error Occurred: \`${error.message}\`!` });
+            return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
         } else {
-            return await interaction.reply({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
+            await interaction.reply({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
+            return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
         };
     };
 
@@ -154,7 +159,7 @@ module.exports = class Util {
 
     formatTime(milliseconds, minimal = false) {
         if (!milliseconds || isNaN(milliseconds) || milliseconds <= 0) {
-            throw new RangeError("Utils#formatTime(milliseconds: number) Milliseconds must be a number greater than 0");
+            return '00:00'
         }
         if (typeof minimal !== "boolean") {
             throw new RangeError("Utils#formatTime(milliseconds: number, minimal: boolean) Minimal must be a boolean");
@@ -229,5 +234,19 @@ module.exports = class Util {
 
     capitalizeString(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
+    /**
+     * 
+     * @param {number} position Position MS
+     * @param {number} duration Duration MS 
+     * @returns progress slidebar
+     */
+
+    progressBar({ position, duration }) {
+        const [bar_size, bar, slider] = [10, "▬", "🔘"];
+
+        let sliderPosition = Math.ceil((position / duration * bar_size));
+        return `${bar.repeat(sliderPosition)}${slider}${bar.repeat(bar_size - ++sliderPosition)}`;
     };
 };
