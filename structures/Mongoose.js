@@ -1,6 +1,10 @@
 let { connect, Promise, connection } = require('mongoose');
 
 module.exports = class Mongoose {
+    /**
+     * Initiates Mongoose Client
+     */
+    
     init() {
         const dbOptions = {
             autoIndex: false,

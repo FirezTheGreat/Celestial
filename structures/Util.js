@@ -18,8 +18,12 @@ module.exports = class Util {
             input.toString().substring(0, 5) === 'class';
     };
 
+    /**
+     * @returns Main Folder Directory
+     */
+
     get directory() {
-        return `${path.dirname(require.main.filename)}${path.sep}`;
+        return `${process.cwd()}${path.sep}`;
     };
 
     /**
@@ -33,7 +37,7 @@ module.exports = class Util {
 
         if (command) {
             try {
-                const commandFile = sync(`${this.directory}commands/${command.category.split(' ').join('-').toLowerCase()}/${command.name.split(' ').join('-').toLowerCase()}.mjs`.replace(/\\/g, '/'))[0];
+                const [commandFile] = sync(`${this.directory}commands/${command.category.split(' ').join('-').toLowerCase()}/${command.name.split(' ').join('-').toLowerCase()}.mjs`.replace(/\\/g, '/'));
 
                 delete require.cache[commandFile];
 
@@ -82,7 +86,7 @@ module.exports = class Util {
 
         if (event) {
             try {
-                const eventFile = sync(`${this.directory}events/${event.category.toLowerCase()}/${event.name}.mjs`.replace(/\\/g, '/'))[0];
+                const [eventFile] = sync(`${this.directory}events/${event.category.toLowerCase()}/${event.name}.mjs`.replace(/\\/g, '/'));
 
                 delete require.cache[eventFile];
 
@@ -139,5 +143,91 @@ module.exports = class Util {
         } else {
             return await interaction.reply({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
         };
+    };
+
+    /**
+     * 
+     * @param {number} milliseconds Date in MS
+     * @param {boolean} minimal Formats in hh:mm:ss
+     * @returns formatted time in 1h 1m 1s or 01:01:01
+     */
+
+    formatTime(milliseconds, minimal = false) {
+        if (!milliseconds || isNaN(milliseconds) || milliseconds <= 0) {
+            throw new RangeError("Utils#formatTime(milliseconds: number) Milliseconds must be a number greater than 0");
+        }
+        if (typeof minimal !== "boolean") {
+            throw new RangeError("Utils#formatTime(milliseconds: number, minimal: boolean) Minimal must be a boolean");
+        }
+        const times = {
+            years: 0,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+        };
+        while (milliseconds > 0) {
+            if (milliseconds - 31557600000 >= 0) {
+                milliseconds -= 31557600000;
+                times.years++;
+            }
+            else if (milliseconds - 2628000000 >= 0) {
+                milliseconds -= 2628000000;
+                times.months++;
+            }
+            else if (milliseconds - 604800000 >= 0) {
+                milliseconds -= 604800000;
+                times.weeks += 7;
+            }
+            else if (milliseconds - 86400000 >= 0) {
+                milliseconds -= 86400000;
+                times.days++;
+            }
+            else if (milliseconds - 3600000 >= 0) {
+                milliseconds -= 3600000;
+                times.hours++;
+            }
+            else if (milliseconds - 60000 >= 0) {
+                milliseconds -= 60000;
+                times.minutes++;
+            }
+            else {
+                times.seconds = Math.round(milliseconds / 1000);
+                milliseconds = 0;
+            }
+        }
+        const finalTime = [];
+        let first = false;
+        for (const [k, v] of Object.entries(times)) {
+            if (minimal) {
+                if (v === 0 && !first && !['minutes', 'seconds'].includes(k)) {
+                    continue;
+                }
+                finalTime.push(v < 10 ? `0${v}` : `${v}`);
+                first = true;
+                continue;
+            }
+            if (v > 0) {
+                finalTime.push(`${v} ${v > 1 ? k : k.slice(0, -1)}`);
+            }
+        }
+        let time = finalTime.join(minimal ? ":" : ", ");
+        if (time.includes(",")) {
+            const pos = time.lastIndexOf(",");
+            time = `${time.slice(0, pos)} and ${time.slice(pos + 1)}`;
+        }
+        return time;
+    };
+
+    /**
+     * 
+     * @param {string} string String to Capitalize
+     * @returns Capitalized String
+     */
+
+    capitalizeString(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     };
 };

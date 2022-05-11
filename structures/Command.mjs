@@ -1,6 +1,14 @@
 import { ApplicationCommandType } from 'discord.js';
+import Celestial from './Celestial.mjs'
 
 export default class Command {
+    /**
+     * 
+     * @param {Celestial} bot Client
+     * @param {string} name Command Name
+     * @param {object} options Command Options
+     */
+
     constructor(bot, name, options = {}) {
         this.bot = bot;
         this.name = options.name || name;

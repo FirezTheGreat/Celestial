@@ -4,7 +4,9 @@
   "description": "Firez's Lair Private Bot",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "node": "node index.js",
+    "lavalink": "java -jar \"structures/music/Lavalink.jar\" --spring.config.location=structures/music/application.yml",
+    "start": "start /b java -jar \"structures/music/Lavalink.jar\" --spring.config.location=structures/music/application.yml & start /b node index.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,7 @@
   "homepage": "https://github.com/FirezTheGreat/Celestial#readme",
   "dependencies": {
     "discord.js": "^14.0.0-dev.1651493371-4ba0f56",
+    "erela.js": "^2.3.3",
     "glob": "^8.0.1",
     "mongoose": "^6.3.2"
   }

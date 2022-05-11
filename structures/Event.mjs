@@ -1,4 +1,13 @@
+import Celestial from "./Celestial.mjs";
+
 export default class Event {
+    /**
+     * 
+     * @param {Celestial} bot Client
+     * @param {string} name Event Name
+     * @param {object} options Event Options
+     */
+
     constructor(bot, name, options = {}) {
         this.bot = bot;
         this.name = name;

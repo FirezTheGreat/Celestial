@@ -1,0 +1,35 @@
+server:
+  port: 8000
+  address: 0.0.0.0
+lavalink:
+  server:
+    password: "celestial"
+    sources:
+      youtube: true
+      bandcamp: false
+      soundcloud: true
+      twitch: true
+      vimeo: false
+      http: false
+      local: false
+    bufferDurationMs: 400
+    frameBufferDurationMs: 5000
+    youtubePlaylistLoadLimit: 6
+    playerUpdateInterval: 5
+    youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
+    gc-warnings: true
+
+metrics:
+  prometheus:
+    enabled: false
+    endpoint: /metrics
+
+logging:
+  file:
+    max-history: 30
+    max-size: 1GB
+
+  level:
+    root: INFO
+    lavalink: INFO

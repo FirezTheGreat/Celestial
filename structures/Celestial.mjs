@@ -1,5 +1,6 @@
 import { Client, Partials, ActivityType, IntentsBitField, Collection } from "discord.js";
 import Mongoose from "./Mongoose.js";
+import Music from "./music/Music.mjs";
 import Util from "./Util.js";
 
 export default class Celestial extends Client {
@@ -26,6 +27,11 @@ export default class Celestial extends Client {
         this.utils = new Util(this);
     };
 
+    /**
+     * 
+     * @param {Client} options Client Options
+     */
+
     validate(options) {
         if (typeof options !== 'object') throw new TypeError('Options should be a type of Object.');
 
@@ -33,12 +39,23 @@ export default class Celestial extends Client {
         this.token = options.token;
     };
 
+    /**
+     * 
+     * @returns Starts the bot and loads all Commands and Events
+     */
+
     async start() {
         try {
             await this.utils.loadCommands();
             await this.utils.loadEvents();
-            this.mongoose.init();
             await super.login(this.token);
+
+            setImmediate(() => {
+                this.music = new Music(this);
+
+                this.music.init(this.user.id);
+                this.mongoose.init();
+            });
         } catch (error) {
             console.error(error);
         };
