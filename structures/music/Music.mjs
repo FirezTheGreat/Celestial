@@ -27,10 +27,9 @@ export default class Music extends Manager {
             }
         });
 
-
         this.on('nodeConnect', (node) => console.log(`Connected to ${node.options.identifier}:${node.options.port}`));
 
-        this.on('nodeReconnect', (node) => console.log(`Reconnected to ${node.options.identifier}:${node.options.port}`));
+        this.on('nodeReconnect', (node) => console.log(`Reconnecting to ${node.options.identifier}:${node.options.port}`));
 
         this.on('nodeDisconnect', (node, error) => console.warn(`${node.options.identifier} Disconnected\nReason - [${error.code}] - ${error.reason}}`));
 

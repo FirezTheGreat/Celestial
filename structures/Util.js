@@ -246,7 +246,12 @@ module.exports = class Util {
     progressBar({ position, duration }) {
         const [bar_size, bar, slider] = [10, "▬", "🔘"];
 
-        let sliderPosition = Math.ceil((position / duration * bar_size));
-        return `${bar.repeat(sliderPosition)}${slider}${bar.repeat(bar_size - ++sliderPosition)}`;
+        if (position === 0) position++;
+
+        let sliderPosition = Math.ceil((position / duration * 100) / 100 * bar_size);
+        let indexPosition = sliderPosition - 1 >= 10 ? 10 : sliderPosition - 1;
+        let durationPosition = sliderPosition > 10 ? 10 : bar_size - sliderPosition;
+
+        return `${bar.repeat(indexPosition)}${slider}${bar.repeat(durationPosition)}`;
     };
 };
