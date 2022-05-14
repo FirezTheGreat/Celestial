@@ -1,11 +1,11 @@
 const { CommandInteraction } = require('discord.js');
-const path = require('path');
+const { sep, parse } = require('path');
 const { sync } = require('glob');
 
 module.exports = class Util {
     /**
      * 
-     * @param {import('../structures/Celestial.mjs').default} bot 
+     * @param {import('./Celestial.mjs').default} bot 
      */
 
     constructor(bot) {
@@ -28,7 +28,7 @@ module.exports = class Util {
      */
 
     get directory() {
-        return `${process.cwd()}${path.sep}`;
+        return `${process.cwd()}${sep}`;
     };
 
     /**
@@ -46,7 +46,7 @@ module.exports = class Util {
 
                 delete require.cache[commandFile];
 
-                const { name } = path.parse(commandFile);
+                const { name } = parse(commandFile);
                 const { default: File } = await import(`file:///${commandFile}`);
 
                 if (!File) return new Error(`*${name} is not a file constructor*`);
@@ -66,7 +66,7 @@ module.exports = class Util {
             try {
                 delete require.cache[commandFile];
 
-                const { name } = path.parse(commandFile);
+                const { name } = parse(commandFile);
                 const { default: File } = await import(`file:///${commandFile}`);
 
                 if (!this.isClass(File)) throw new TypeError(`Command ${name} doesn't export a class.`);
@@ -95,7 +95,7 @@ module.exports = class Util {
 
                 delete require.cache[eventFile];
 
-                const { name } = path.parse(eventFile);
+                const { name } = parse(eventFile);
                 const { default: File } = await import(`file:///${eventFile}`);
 
                 if (!File) return new Error(`*${name} is not a file constructor*`);
@@ -115,7 +115,7 @@ module.exports = class Util {
             try {
                 delete require.cache[eventFile];
 
-                const { name } = path.parse(eventFile);
+                const { name } = parse(eventFile);
                 const { default: File } = await import(`file:///${eventFile}`);
 
                 if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);
@@ -141,7 +141,7 @@ module.exports = class Util {
             try {
                 delete require.cache[eventFile];
 
-                const { name } = path.parse(eventFile);
+                const { name } = parse(eventFile);
                 const { default: File } = await import(`file:///${eventFile}`);
 
                 if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);

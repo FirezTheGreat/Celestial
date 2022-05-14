@@ -84,6 +84,8 @@ export default class Play extends Command {
                                 await interaction.editReply({ embeds: [trackAddEmbed] });
 
                                 break;
+                            case 'PLAYLIST_LOADED':
+                                
                         };
                     } catch (error) {
                         player.destroy();
