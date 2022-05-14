@@ -7,6 +7,13 @@ export default class Command {
      * @param {Celestial} bot Client
      * @param {string} name Command Name
      * @param {object} options Command Options
+     * @param {string} options.name Command Name
+     * @param {string} options.description Command Description
+     * @param {string} options.category Command Category
+     * @param {string} options.usage Command Usage
+     * @param {number} options.type Command Type
+     * @param {array} options.sub_commands Sub Commands Array
+     * @param {array} options.options Command Options
      */
 
     constructor(bot, name, options = {}) {

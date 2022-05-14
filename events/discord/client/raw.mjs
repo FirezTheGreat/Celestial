@@ -1,4 +1,4 @@
-import Event from "../../structures/Event.mjs";
+import Event from "../../../structures/Event.mjs";
 
 export default class Raw extends Event {
     constructor(...args) {
@@ -7,6 +7,11 @@ export default class Raw extends Event {
         });
     };
 
+    /**
+     * 
+     * @param {import("discord-api-types/v10").GatewaySendPayload} payload Gateway Payload Data
+     */
+    
     EventRun(payload) {
         try {
             if (this.bot.music) {

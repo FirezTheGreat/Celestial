@@ -1,5 +1,5 @@
 import { VoiceState } from "discord.js";
-import Event from "../../structures/Event.mjs";
+import Event from "../../../structures/Event.mjs";
 
 export default class voiceStateUpdate extends Event {
     constructor(...args) {
@@ -16,10 +16,14 @@ export default class voiceStateUpdate extends Event {
 
     EventRun(oldState, newState) {
         try {
-            if (oldState.member.id === this.bot.user.id && !newState.channelId) {
+            if (oldState.member.id === this.bot.user.id) {
                 const player = this.bot.music.get(newState.guild.id);
 
-                player ? player.destroy() : null;
+                if (!newState.channelId) {
+                    player ? player.destroy() : null;
+                } else {
+                    player.voiceChannel = newState.channelId;
+                };
             };
         } catch (error) {
             console.error(error);

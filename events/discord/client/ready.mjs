@@ -1,5 +1,5 @@
 import { ApplicationCommandType } from "discord.js";
-import Event from "../../structures/Event.mjs";
+import Event from "../../../structures/Event.mjs";
 
 export default class Ready extends Event {
     constructor(...args) {
@@ -9,6 +9,10 @@ export default class Ready extends Event {
         });
     };
 
+    /**
+     * Initiates Ready Event
+     */
+    
     async EventRun() {
         try {
             const InteractionCommands = this.bot.commands.filter(({ type }) => [ApplicationCommandType.User, ApplicationCommandType.Message, ApplicationCommandType.ChatInput].includes(type));

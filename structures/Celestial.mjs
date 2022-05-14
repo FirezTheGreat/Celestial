@@ -1,6 +1,8 @@
 import { Client, Partials, ActivityType, IntentsBitField, Collection } from "discord.js";
+import { Manager } from "erela.js";
 import Mongoose from "./Mongoose.js";
-import Music from "./music/Music.mjs";
+import Config from '../config.mjs';
+import './music/Filters.mjs'
 import Util from "./Util.js";
 
 export default class Celestial extends Client {
@@ -21,6 +23,7 @@ export default class Celestial extends Client {
 
         this.validate(options);
 
+        this.playerEvents = new Collection();
         this.commands = new Collection();
         this.events = new Collection();
         this.mongoose = new Mongoose();
@@ -41,7 +44,7 @@ export default class Celestial extends Client {
 
     /**
      * 
-     * @returns Starts the bot and loads all Commands and Events
+     * @returns Starts the bot and loads all Commands, Events and Initiates Mongoose Client
      */
 
     async start() {
@@ -50,11 +53,28 @@ export default class Celestial extends Client {
             await this.utils.loadEvents();
             await super.login(this.token);
 
-            setImmediate(() => {
-                this.music = new Music(this);
+            setImmediate(async () => {
+                const guilds = this.guilds;
+
+                this.music = new Manager({
+                    autoPlay: true,
+                    clientId: this.user.id,
+                    nodes: [Config.music],
+                    trackPartial: [
+                        'author', 'duration',
+                        'requester', 'thumbnail',
+                        'title', 'uri'
+                    ],
+                    async send (id, payload) {
+                        const guild = guilds.cache.get(id);
+                        if (guild.available) guild.shard.send(payload);
+                    }
+                });
 
                 this.music.init(this.user.id);
                 this.mongoose.init();
+
+                await this.utils.loadPlayerEvents();
             });
         } catch (error) {
             console.error(error);

@@ -1,5 +1,5 @@
 import { Interaction } from 'discord.js';
-import Event from '../../structures/Event.mjs';
+import Event from '../../../structures/Event.mjs';
 
 export default class interactionCreate extends Event {
     constructor(...args) {
@@ -10,7 +10,7 @@ export default class interactionCreate extends Event {
 
     /**
      * 
-     * @param {Interaction} interaction 
+     * @param {Interaction} interaction Interaction Created
      */
     
     async EventRun(interaction) {

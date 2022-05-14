@@ -1,9 +1,13 @@
 const { CommandInteraction } = require('discord.js');
 const path = require('path');
 const { sync } = require('glob');
-const { Player } = require('erela.js');
 
 module.exports = class Util {
+    /**
+     * 
+     * @param {import('../structures/Celestial.mjs').default} bot 
+     */
+
     constructor(bot) {
         this.bot = bot;
     };
@@ -105,7 +109,7 @@ module.exports = class Util {
             };
         };
 
-        const events = sync(`${this.directory}events/**/*.mjs`.replace(/\\/g, '/'));
+        const events = sync(`${this.directory}events/discord/**/*.mjs`.replace(/\\/g, '/'));
 
         for (const eventFile of events) {
             try {
@@ -122,6 +126,32 @@ module.exports = class Util {
 
                 this.bot.events.set(event.name, event);
                 event.emitter[event.type](name, (...args) => event.EventRun(...args));
+            } catch (error) {
+                console.error(error);
+            };
+        };
+    };
+
+    async loadPlayerEvents() {
+        const { default: PlayerEvent } = await import('./PlayerEvent.mjs');
+
+        const events = sync(`${this.directory}events/lavalink/**/*.mjs`.replace(/\\/g, '/'));
+
+        for (const eventFile of events) {
+            try {
+                delete require.cache[eventFile];
+
+                const { name } = path.parse(eventFile);
+                const { default: File } = await import(`file:///${eventFile}`);
+
+                if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);
+
+                const event = new File(this.bot, name.toLowerCase(), this.bot.music);
+
+                if (!(event instanceof PlayerEvent)) throw new TypeError(`Event ${name} doesn't belong in Events`);
+
+                this.bot.playerEvents.set(event.name, event);
+                event.emitter[event.type](name, (...args) => event.PlayerEventRun(...args));
             } catch (error) {
                 console.error(error);
             };
