@@ -1,5 +1,5 @@
 import { Node } from "erela.js";
-import PlayerEvent from "../../../structures/PlayerEvent.mjs";
+import PlayerEvent from "../../../structures/PlayerEvent.js";
 
 export default class nodeReconnect extends PlayerEvent {
     constructor(...args) {

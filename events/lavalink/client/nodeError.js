@@ -1,7 +1,7 @@
 import { Node } from "erela.js";
-import PlayerEvent from "../../../structures/PlayerEvent.mjs";
+import PlayerEvent from "../../../structures/PlayerEvent.js";
 
-export default class nodeDisconnect extends PlayerEvent {
+export default class nodeError extends PlayerEvent {
     constructor(...args) {
         super(...args);
     };
@@ -13,6 +13,6 @@ export default class nodeDisconnect extends PlayerEvent {
      */
 
     async PlayerEventRun(node, error) {
-        console.warn(`${node.options.identifier} Disconnected\nReason - [${error.code}]${error.message}`);
+        console.error(`Error received from ${node.options.host}:${node.options.port} - ${error}`);
     };
 };

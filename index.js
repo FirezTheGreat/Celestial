@@ -1,7 +1,5 @@
-(async () => {
-    const { default: Celestial} = await import("./structures/Celestial.mjs");
-    const { default: Config } = await import("./config.mjs");
+import Celestial from "./structures/Celestial.js";
+import Config from "./config.js";
 
-    const celestial = new Celestial(Config);
-    celestial.start();
-})();
+const celestial = new Celestial(Config);
+celestial.start();

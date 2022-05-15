@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import Command from "../../structures/Command.mjs";
+import Command from "../../structures/Command.js";
 
 export default class Play extends Command {
     constructor(...args) {
@@ -63,9 +63,7 @@ export default class Play extends Command {
                                 const [playTrack] = track.tracks;
                                 player.queue.add(playTrack);
 
-                                if (!player.playing && !player.paused && !player.queue.size) {
-                                    await player.play();
-                                };
+                                if (!player.playing && !player.paused && !player.queue.size) await player.play();
 
                                 const trackAddEmbed = new EmbedBuilder()
                                     .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL() })
@@ -74,7 +72,7 @@ export default class Play extends Command {
                                     .setColor('Green')
                                     .setDescription(`*Track has been added to queue!*\n${this.bot.utils.formatTime(0, true)}/${this.bot.utils.formatTime(playTrack.duration, true)}\n${this.bot.utils.progressBar({ position: 0, duration: playTrack.duration })}`)
                                     .setFields([
-                                        { name: 'Track', value: playTrack.title, inline: true },
+                                        { name: 'Track', value: `[${playTrack.title}](${playTrack.uri})`, inline: true },
                                         { name: 'Requester', value: `${interaction.user}`, inline: true },
                                         { name: 'Duration', value: this.bot.utils.formatTime(playTrack.duration, true), inline: true }
                                     ])
@@ -85,7 +83,25 @@ export default class Play extends Command {
 
                                 break;
                             case 'PLAYLIST_LOADED':
-                                
+                                for (const playTrack of track.tracks) player.queue.add(playTrack);
+
+                                if (!player.playing && !player.paused) await player.play();
+
+                                const trackPlaylistAddEmbed = new EmbedBuilder()
+                                    .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+                                    .setTitle('Playlist Queued')
+                                    .setThumbnail(track.playlist.selectedTrack.thumbnail)
+                                    .setColor('Green')
+                                    .setDescription(`*Track has been added to queue!*\n${this.bot.utils.formatTime(0, true)}/${this.bot.utils.formatTime(track.playlist.duration, true)}\n${this.bot.utils.progressBar({ position: 0, duration: track.playlist.duration })}`)
+                                    .setFields([
+                                        { name: 'Track', value: track.playlist.name, inline: true },
+                                        { name: 'Requester', value: `${interaction.user}`, inline: true },
+                                        { name: 'Duration', value: this.bot.utils.formatTime(track.playlist.duration, true), inline: true }
+                                    ])
+                                    .setFooter({ text: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
+                                    .setTimestamp();
+
+                                await interaction.editReply({ embeds: [trackPlaylistAddEmbed] });
                         };
                     } catch (error) {
                         player.destroy();

@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import Command from "../../structures/Command.mjs";
+import Command from "../../structures/Command.js";
 
 export default class Join extends Command {
     constructor(...args) {

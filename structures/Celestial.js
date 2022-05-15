@@ -1,9 +1,9 @@
 import { Client, Partials, ActivityType, IntentsBitField, Collection } from "discord.js";
 import { Manager } from "erela.js";
 import Mongoose from "./Mongoose.js";
-import Config from '../config.mjs';
-import './music/Filters.mjs'
+import Config from '../config.js';
 import Util from "./Util.js";
+import './music/Filters.js';
 
 export default class Celestial extends Client {
     constructor(options = {}) {
@@ -23,10 +23,10 @@ export default class Celestial extends Client {
 
         this.validate(options);
 
+        this.trackCollectors = new Collection();
         this.playerEvents = new Collection();
         this.commands = new Collection();
         this.events = new Collection();
-        this.mongoose = new Mongoose();
         this.utils = new Util(this);
     };
 
@@ -65,14 +65,14 @@ export default class Celestial extends Client {
                         'requester', 'thumbnail',
                         'title', 'uri'
                     ],
-                    async send (id, payload) {
+                    async send(id, payload) {
                         const guild = guilds.cache.get(id);
                         if (guild.available) guild.shard.send(payload);
                     }
                 });
 
                 this.music.init(this.user.id);
-                this.mongoose.init();
+                new Mongoose().init();
 
                 await this.utils.loadPlayerEvents();
             });

@@ -1,5 +1,5 @@
 import { ApplicationCommandType } from 'discord.js';
-import Celestial from './Celestial.mjs'
+import Celestial from './Celestial.js'
 
 export default class Command {
     /**

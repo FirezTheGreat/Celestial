@@ -1,5 +1,5 @@
 import { ApplicationCommandType } from "discord.js";
-import Event from "../../../structures/Event.mjs";
+import Event from "../../../structures/Event.js";
 
 export default class Ready extends Event {
     constructor(...args) {

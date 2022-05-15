@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Firez's Lair Private Bot",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "node": "node index.js",
     "lavalink": "java -jar \"structures/music/Lavalink.jar\" --spring.config.location=structures/music/application.yml",
@@ -26,5 +27,8 @@
     "erela.js": "^2.3.3",
     "glob": "^8.0.1",
     "mongoose": "^6.3.2"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.11.97"
   }
 }

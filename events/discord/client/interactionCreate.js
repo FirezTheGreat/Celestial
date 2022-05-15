@@ -1,5 +1,5 @@
 import { Interaction } from 'discord.js';
-import Event from '../../../structures/Event.mjs';
+import Event from '../../../structures/Event.js';
 
 export default class interactionCreate extends Event {
     constructor(...args) {

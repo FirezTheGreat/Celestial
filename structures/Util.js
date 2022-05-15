@@ -1,11 +1,11 @@
-const { CommandInteraction } = require('discord.js');
-const { sep, parse } = require('path');
-const { sync } = require('glob');
+import { CommandInteraction } from 'discord.js';
+import { sep, parse } from 'path';
+import glob from 'glob';
 
-module.exports = class Util {
+export default class Util {
     /**
      * 
-     * @param {import('./Celestial.mjs').default} bot 
+     * @param {import('./Celestial.js').default} bot 
      */
 
     constructor(bot) {
@@ -38,13 +38,11 @@ module.exports = class Util {
      */
 
     async loadCommands(command = null) {
-        const { default: Command } = await import('./Command.mjs');
+        const { default: Command } = await import('./Command.js');
 
         if (command) {
             try {
-                const [commandFile] = sync(`${this.directory}commands/${command.category.split(' ').join('-').toLowerCase()}/${command.name.split(' ').join('-').toLowerCase()}.mjs`.replace(/\\/g, '/'));
-
-                delete require.cache[commandFile];
+                const [commandFile] = glob.sync(`${this.directory}commands/${command.category.split(' ').join('-').toLowerCase()}/${command.name.split(' ').join('-').toLowerCase()}.js`.replace(/\\/g, '/'));
 
                 const { name } = parse(commandFile);
                 const { default: File } = await import(`file:///${commandFile}`);
@@ -60,12 +58,10 @@ module.exports = class Util {
             };
         };
 
-        const commands = sync(`${this.directory}commands/**/*.mjs`.replace(/\\/g, '/'));
+        const commands = glob.sync(`${this.directory}commands/**/*.js`.replace(/\\/g, '/'));
 
         for (const commandFile of commands) {
             try {
-                delete require.cache[commandFile];
-
                 const { name } = parse(commandFile);
                 const { default: File } = await import(`file:///${commandFile}`);
 
@@ -87,13 +83,11 @@ module.exports = class Util {
      */
 
     async loadEvents(event = null) {
-        const { default: Event } = await import('./Event.mjs');
+        const { default: Event } = await import('./Event.js');
 
         if (event) {
             try {
-                const [eventFile] = sync(`${this.directory}events/${event.category.toLowerCase()}/${event.name}.mjs`.replace(/\\/g, '/'));
-
-                delete require.cache[eventFile];
+                const [eventFile] = glob.sync(`${this.directory}events/${event.category.toLowerCase()}/${event.name}.js`.replace(/\\/g, '/'));
 
                 const { name } = parse(eventFile);
                 const { default: File } = await import(`file:///${eventFile}`);
@@ -109,12 +103,10 @@ module.exports = class Util {
             };
         };
 
-        const events = sync(`${this.directory}events/discord/**/*.mjs`.replace(/\\/g, '/'));
+        const events = glob.sync(`${this.directory}events/discord/**/*.js`.replace(/\\/g, '/'));
 
         for (const eventFile of events) {
             try {
-                delete require.cache[eventFile];
-
                 const { name } = parse(eventFile);
                 const { default: File } = await import(`file:///${eventFile}`);
 
@@ -133,14 +125,12 @@ module.exports = class Util {
     };
 
     async loadPlayerEvents() {
-        const { default: PlayerEvent } = await import('./PlayerEvent.mjs');
+        const { default: PlayerEvent } = await import('./PlayerEvent.js');
 
-        const events = sync(`${this.directory}events/lavalink/**/*.mjs`.replace(/\\/g, '/'));
+        const events = glob.sync(`${this.directory}events/lavalink/**/*.js`.replace(/\\/g, '/'));
 
         for (const eventFile of events) {
             try {
-                delete require.cache[eventFile];
-
                 const { name } = parse(eventFile);
                 const { default: File } = await import(`file:///${eventFile}`);
 

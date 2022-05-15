@@ -1,10 +1,10 @@
-let { connect, Promise, connection } = require('mongoose');
+import mongoose from 'mongoose';
 
-module.exports = class Mongoose {
+export default class Mongoose {
     /**
      * Initiates Mongoose Client
      */
-    
+
     init() {
         const dbOptions = {
             autoIndex: false,
@@ -12,18 +12,18 @@ module.exports = class Mongoose {
             connectTimeoutMS: 10000
         };
 
-        connect('mongodb+srv://firez:skyhighup@sky-high.s6amn.mongodb.net/skyr6m?authSource=admin&replicaSet=atlas-tbixx0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true', dbOptions);
-        Promise = global.Promise;
+        mongoose.connect('mongodb+srv://firez:skyhighup@sky-high.s6amn.mongodb.net/skyr6m?authSource=admin&replicaSet=atlas-tbixx0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true', dbOptions);
+        mongoose.Promise = global.Promise;
 
-        connection.on('connected', () => {
+        mongoose.connection.on('connected', () => {
             console.log('Connected to MongoDB Successfully!');
         });
 
-        connection.on('err', error => {
+        mongoose.connection.on('err', error => {
             console.error(`Error Occured From MongoDB: \n${error.message}`);
         });
 
-        connection.on('disconnected', () => {
+        mongoose.connection.on('disconnected', () => {
             console.warn('Connection Disconnected!');
         });
     }

@@ -1,12 +1,13 @@
 import { Manager } from "erela.js";
-import Celestial from "./Celestial.mjs";
+import Celestial from "./Celestial.js";
 
 export default class PlayerEvent {
     /**
      * 
      * @param {Celestial} bot Client
+     * @param {string} name Event Name
+     * @param {Manager} player Player
      * @param {object} options Player Event Options
-     * @param {Manager} options.player Player
      * @param {string} options.type Type of Player Event
      * @param {boolean} options.once Once Event Emitter Boolean
      * @param {Function} options.emitter Event Emitter

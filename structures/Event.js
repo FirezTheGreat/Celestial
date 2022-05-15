@@ -1,4 +1,4 @@
-import Celestial from "./Celestial.mjs";
+import Celestial from "./Celestial.js";
 
 export default class Event {
     /**
