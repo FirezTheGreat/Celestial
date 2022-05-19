@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Config from '../config';
 
 export default class Mongoose {
     /**
@@ -12,7 +13,7 @@ export default class Mongoose {
             connectTimeoutMS: 10000
         };
 
-        mongoose.connect('mongodb+srv://firez:skyhighup@sky-high.s6amn.mongodb.net/skyr6m?authSource=admin&replicaSet=atlas-tbixx0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true', dbOptions);
+        mongoose.connect(Config.mongo_url, dbOptions);
         mongoose.Promise = global.Promise;
 
         mongoose.connection.on('connected', () => {

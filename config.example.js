@@ -1,5 +1,6 @@
 const Config = {
-    token: '', //Discord Bot Token - https://discord.com/developers/applications,
+    token: '', //Discord Bot Token - https://discord.com/developers/applications/,
+    mongo: '', //Mongo URL - https://www.mongodb.com/
     music: {
         host: '0.0.0.0', // host ip
         identifier: '', // Host Identifier

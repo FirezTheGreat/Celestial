@@ -5,7 +5,7 @@ import glob from 'glob';
 export default class Util {
     /**
      * 
-     * @param {import('./Celestial.js').default} bot 
+     * @param {import('./Celestial.js').default} bot Client
      */
 
     constructor(bot) {
@@ -124,24 +124,28 @@ export default class Util {
         };
     };
 
-    async loadPlayerEvents() {
-        const { default: PlayerEvent } = await import('./PlayerEvent.js');
+    /**
+     * @returns Loads All Lavalink Events
+     */
 
-        const playerEvents = glob.sync(`${this.directory}events/lavalink/**/*.js`.replace(/\\/g, '/'));
+    async loadLavalinkEvents() {
+        const { default: LavalinkEvent } = await import('./LavalinkEvent.js');
 
-        for (const playerEventFile of playerEvents) {
+        const LavalinkEvents = glob.sync(`${this.directory}events/lavalink/**/*.js`.replace(/\\/g, '/'));
+
+        for (const LavalinkEventFile of LavalinkEvents) {
             try {
-                const { name } = parse(playerEventFile);
-                const { default: File } = await import(`file:///${playerEventFile}`);
+                const { name } = parse(LavalinkEventFile);
+                const { default: File } = await import(`file:///${LavalinkEventFile}`);
 
                 if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);
 
                 const event = new File(this.bot, name.toLowerCase(), this.bot.music);
 
-                if (!(event instanceof PlayerEvent)) throw new TypeError(`Event ${name} doesn't belong in Lavalink Events`);
+                if (!(event instanceof LavalinkEvent)) throw new TypeError(`Event ${name} doesn't belong in Lavalink Events`);
 
-                this.bot.playerEvents.set(event.name, event);
-                event.emitter[event.type](name, (...args) => event.PlayerEventRun(...args));
+                this.bot.LavalinkEvents.set(event.name, event);
+                event.emitter[event.type](name, (...args) => event.LavalinkEventRun(...args));
             } catch (error) {
                 console.error(error);
             };

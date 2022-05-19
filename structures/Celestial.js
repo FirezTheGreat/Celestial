@@ -74,7 +74,7 @@ export default class Celestial extends Client {
                 this.music.init(this.user.id);
                 new Mongoose().init();
 
-                await this.utils.loadPlayerEvents();
+                await this.utils.loadLavalinkEvents();
             });
         } catch (error) {
             console.error(error);
