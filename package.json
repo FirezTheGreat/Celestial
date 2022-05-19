@@ -5,9 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "node": "node index.js",
-    "lavalink": "java -jar \"structures/music/Lavalink.jar\" --spring.config.location=structures/music/application.yml",
-    "start": "start /b java -jar \"structures/music/Lavalink.jar\" --spring.config.location=structures/music/application.yml & start /b node index.js"
+    "celestial": "node index.js",
+    "lavalink": "java -jar \"structures/music/Lavalink.jar\" --spring.config.location=structures/music/application.yml"
   },
   "repository": {
     "type": "git",

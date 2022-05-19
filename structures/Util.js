@@ -263,18 +263,16 @@ export default class Util {
     /**
      * 
      * @param {number} position Position MS
-     * @param {number} duration Duration MS 
+     * @param {number} duration Duration MS
      * @returns progress slidebar
      */
 
     progressBar({ position, duration }) {
-        const [bar_size, bar, slider] = [10, "▬", "🔘"];
-
-        if (position === 0) position++;
+        const [bar_size, bar, slider] = [15, "▬", "🔘"];
 
         let sliderPosition = Math.ceil((position / duration * 100) / 100 * bar_size);
-        let indexPosition = sliderPosition - 1 >= 10 ? 10 : sliderPosition - 1;
-        let durationPosition = sliderPosition > 10 ? 10 : bar_size - sliderPosition;
+        let indexPosition = sliderPosition - 1 >= bar_size ? bar_size : sliderPosition - 1 < 0 ? 0 : sliderPosition - 1;
+        let durationPosition = sliderPosition > bar_size ? bar_size : bar_size - sliderPosition;
 
         return `${bar.repeat(indexPosition)}${slider}${bar.repeat(durationPosition)}`;
     };
