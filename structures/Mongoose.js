@@ -26,5 +26,5 @@ export default class Mongoose {
         mongoose.connection.on('disconnected', () => {
             console.warn('Connection Disconnected!');
         });
-    }
+    };
 };

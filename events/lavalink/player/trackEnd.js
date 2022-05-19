@@ -17,7 +17,11 @@ export default class trackEnd extends PlayerEvent {
             const trackCollectorMessage = this.bot.trackCollectors.get(player.guild);
             if (trackCollectorMessage) trackCollectorMessage.stop();
 
-            return this.bot.trackCollectors.delete(player.guild);
+            this.bot.trackCollectors.delete(player.guild);
+
+            if (!player.queue.totalSize) {
+                player.queue.previous = null;
+            };
         } catch (error) {
             console.error(error);
         };

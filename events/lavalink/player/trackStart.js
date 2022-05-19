@@ -50,6 +50,7 @@ export default class trackStart extends PlayerEvent {
                         .setCustomId('next')
                         .setEmoji('⏭')
                         .setStyle(ButtonStyle.Primary)
+                        .setDisabled(player.queue.size ? false : true)
                 ]);
 
             const trackEmbedLoopComponents = new ActionRowBuilder()
@@ -62,6 +63,7 @@ export default class trackStart extends PlayerEvent {
                         .setCustomId('loop_queue')
                         .setEmoji('🔁')
                         .setStyle(ButtonStyle.Primary)
+                        .setDisabled(player.queue.size ? false : true)
                 ]);
 
             const trackMessage = await text_channel.send({ embeds: [trackStartEmbed], components: [trackEmbedPlayComponents, trackEmbedLoopComponents] });
@@ -73,10 +75,18 @@ export default class trackStart extends PlayerEvent {
                 try {
                     switch (interaction.customId) {
                         case 'previous':
+                            console.log(player.queue)
                             if (player.queue.previous) {
-                                player.play(player.queue.previous);
+                                const { current } = player.queue;
 
-                                return trackCollector.stop('previous');
+                                player.play(player.queue.previous);
+                                player.queue.add(current);
+
+                                if (player.queue[0].track === player.queue.previous.track) player.queue.previous = null;
+
+                                trackCollector.stop('previous');
+
+                                await interaction.reply({ content: '*Skipped to Previous Track*', ephemeral: true });
                             } else {
                                 await interaction.reply({ content: '*Previous Track Unavailable*', ephemeral: true });
                             };
@@ -86,7 +96,9 @@ export default class trackStart extends PlayerEvent {
                             if (player.queue.size) {
                                 player.stop();
 
-                                return trackCollector.stop('stop');
+                                trackCollector.stop('stop');
+
+                                await interaction.reply({ content: '*Skipped to Next Track*', ephemeral: true });
                             } else {
                                 await interaction.reply({ content: '*Next Track Unavailable*', ephemeral: true });
                             };
@@ -146,8 +158,8 @@ export default class trackStart extends PlayerEvent {
                     this.bot.trackCollectors.delete(player.guild);
 
                     if (trackMessage.deletable) {
-                        if (player.trackRepeat || player.queueRepeat) {
-                            if (reason === 'stop') {
+                        if (['stop', 'previous', 'next'].includes(reason)) {
+                            if (player.trackRepeat || player.queueRepeat && reason === 'stop') {
                                 player.setTrackRepeat(false);
                                 player.setQueueRepeat(false);
                             };

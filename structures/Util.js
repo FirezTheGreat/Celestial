@@ -127,18 +127,18 @@ export default class Util {
     async loadPlayerEvents() {
         const { default: PlayerEvent } = await import('./PlayerEvent.js');
 
-        const events = glob.sync(`${this.directory}events/lavalink/**/*.js`.replace(/\\/g, '/'));
+        const playerEvents = glob.sync(`${this.directory}events/lavalink/**/*.js`.replace(/\\/g, '/'));
 
-        for (const eventFile of events) {
+        for (const playerEventFile of playerEvents) {
             try {
-                const { name } = parse(eventFile);
-                const { default: File } = await import(`file:///${eventFile}`);
+                const { name } = parse(playerEventFile);
+                const { default: File } = await import(`file:///${playerEventFile}`);
 
                 if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);
 
                 const event = new File(this.bot, name.toLowerCase(), this.bot.music);
 
-                if (!(event instanceof PlayerEvent)) throw new TypeError(`Event ${name} doesn't belong in Events`);
+                if (!(event instanceof PlayerEvent)) throw new TypeError(`Event ${name} doesn't belong in Lavalink Events`);
 
                 this.bot.playerEvents.set(event.name, event);
                 event.emitter[event.type](name, (...args) => event.PlayerEventRun(...args));

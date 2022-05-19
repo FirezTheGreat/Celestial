@@ -5,7 +5,7 @@ export default class Play extends Command {
     constructor(...args) {
         super(...args, {
             name: 'play',
-            description: 'Play\s Music Track',
+            description: 'Play\s a Music Track',
             category: 'Music',
             usage: '[query | link]',
             options: [
@@ -16,7 +16,7 @@ export default class Play extends Command {
 
     /**
      * 
-     * @param {ChatInputCommandInteraction} interaction 
+     * @param {ChatInputCommandInteraction} interaction CommandInteraction
      * @returns Plays a Song Track
      */
 
