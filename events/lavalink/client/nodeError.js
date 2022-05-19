@@ -10,9 +10,10 @@ export default class nodeError extends PlayerEvent {
      * 
      * @param {Node} node Node
      * @param {Error} error Node Error
+     * @returns Error Status of Node
      */
 
     async PlayerEventRun(node, error) {
-        console.error(`Error received from ${node.options.host}:${node.options.port} - ${error}`);
+        return console.error(`Error received from ${node.options.host}:${node.options.port} - ${error}`);
     };
 };

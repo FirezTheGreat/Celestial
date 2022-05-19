@@ -10,9 +10,10 @@ export default class nodeDisconnect extends PlayerEvent {
      * 
      * @param {Node} node Node
      * @param {Error} error Node Error
+     * @returns Disconnection Status of Node
      */
 
     async PlayerEventRun(node, error) {
-        console.warn(`${node.options.identifier} Disconnected\nReason - [${error.code}]${error.message}`);
+        return console.warn(`${node.options.identifier} Disconnected\nReason - [${error.code}]${error.message}`);
     };
 };

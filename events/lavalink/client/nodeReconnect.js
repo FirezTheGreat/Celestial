@@ -9,9 +9,10 @@ export default class nodeReconnect extends PlayerEvent {
     /**
      * 
      * @param {Node} node Node
+     * @returns Reconnection Status of Node
      */
-    
+
     async PlayerEventRun(node) {
-        console.log(`Reconnecting to ${node.options.identifier}:${node.options.port}`);
+        return console.log(`Reconnecting to ${node.options.identifier}:${node.options.port}`);
     };
 };

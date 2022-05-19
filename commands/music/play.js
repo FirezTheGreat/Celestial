@@ -17,7 +17,7 @@ export default class Play extends Command {
     /**
      * 
      * @param {ChatInputCommandInteraction} interaction 
-     * @returns Plays Song
+     * @returns Plays a Song Track
      */
 
     async InteractionRun(interaction) {
@@ -46,71 +46,69 @@ export default class Play extends Command {
 
             await interaction.deferReply();
 
-            switch (true) {
-                default:
-                    try {
-                        const track = await player.search({ query: query, source: 'youtube' }, interaction.user);
+            try {
+                const track = await player.search({ query: query, source: 'youtube' }, interaction.user);
 
-                        switch (track.loadType) {
-                            case 'NO_MATCHES':
-                                await interaction.editReply({ content: '*No Matches found*' });
+                switch (track.loadType) {
+                    case 'NO_MATCHES':
+                        await interaction.editReply({ content: '*No Matches found*' });
 
-                                break;
-                            case 'LOAD_FAILED':
-                                throw track.exception
-                            case 'TRACK_LOADED':
-                            case 'SEARCH_RESULT':
-                                const [playTrack] = track.tracks;
-                                player.queue.add(playTrack);
+                        break;
+                    case 'LOAD_FAILED':
+                        throw track.exception
+                    case 'TRACK_LOADED':
+                    case 'SEARCH_RESULT':
+                        const [playTrack] = track.tracks;
+                        player.queue.add(playTrack);
 
-                                if (!player.playing && !player.paused && !player.queue.size) await player.play();
+                        if (!player.playing && !player.paused && !player.queue.size) await player.play();
 
-                                const trackAddEmbed = new EmbedBuilder()
-                                    .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL() })
-                                    .setTitle('Added to Queue')
-                                    .setThumbnail(playTrack.thumbnail)
-                                    .setColor('Green')
-                                    .setDescription(`*Track has been added to queue!*\n${this.bot.utils.formatTime(0, true)}/${this.bot.utils.formatTime(playTrack.duration, true)}\n${this.bot.utils.progressBar({ position: 0, duration: playTrack.duration })}`)
-                                    .setFields([
-                                        { name: 'Track', value: `[${playTrack.title}](${playTrack.uri})`, inline: true },
-                                        { name: 'Requester', value: `${interaction.user}`, inline: true },
-                                        { name: 'Duration', value: this.bot.utils.formatTime(playTrack.duration, true), inline: true }
-                                    ])
-                                    .setFooter({ text: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
-                                    .setTimestamp();
+                        const trackAddEmbed = new EmbedBuilder()
+                            .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+                            .setTitle('Added to Queue')
+                            .setThumbnail(playTrack.thumbnail)
+                            .setColor('Green')
+                            .setDescription(`*Track has been added to queue!*\n${this.bot.utils.formatTime(0, true)}/${this.bot.utils.formatTime(playTrack.duration, true)}\n${this.bot.utils.progressBar({ position: 0, duration: playTrack.duration })}`)
+                            .setFields([
+                                { name: 'Track', value: `[${playTrack.title}](${playTrack.uri})`, inline: true },
+                                { name: 'Requester', value: `${interaction.user}`, inline: true },
+                                { name: 'Duration', value: this.bot.utils.formatTime(playTrack.duration, true), inline: true }
+                            ])
+                            .setFooter({ text: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
+                            .setTimestamp();
 
-                                await interaction.editReply({ embeds: [trackAddEmbed] });
+                        await interaction.editReply({ embeds: [trackAddEmbed] });
 
-                                break;
-                            case 'PLAYLIST_LOADED':
-                                for (const playTrack of track.tracks) player.queue.add(playTrack);
+                        break;
+                    case 'PLAYLIST_LOADED':
+                        for (const playTrack of track.tracks) player.queue.add(playTrack);
 
-                                if (!player.playing && !player.paused) await player.play();
+                        if (!player.playing && !player.paused) await player.play();
 
-                                const trackPlaylistAddEmbed = new EmbedBuilder()
-                                    .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL() })
-                                    .setTitle('Playlist Queued')
-                                    .setThumbnail(track.playlist.selectedTrack.thumbnail)
-                                    .setColor('Green')
-                                    .setDescription(`*Track has been added to queue!*\n${this.bot.utils.formatTime(0, true)}/${this.bot.utils.formatTime(track.playlist.duration, true)}\n${this.bot.utils.progressBar({ position: 0, duration: track.playlist.duration })}`)
-                                    .setFields([
-                                        { name: 'Track', value: track.playlist.name, inline: true },
-                                        { name: 'Requester', value: `${interaction.user}`, inline: true },
-                                        { name: 'Duration', value: this.bot.utils.formatTime(track.playlist.duration, true), inline: true }
-                                    ])
-                                    .setFooter({ text: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
-                                    .setTimestamp();
+                        const trackPlaylistAddEmbed = new EmbedBuilder()
+                            .setAuthor({ name: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+                            .setTitle('Playlist Queued')
+                            .setThumbnail(track.playlist.selectedTrack.thumbnail)
+                            .setColor('Green')
+                            .setDescription(`*Track has been added to queue!*\n${this.bot.utils.formatTime(0, true)}/${this.bot.utils.formatTime(track.playlist.duration, true)}\n${this.bot.utils.progressBar({ position: 0, duration: track.playlist.duration })}`)
+                            .setFields([
+                                { name: 'Track', value: track.playlist.name, inline: true },
+                                { name: 'Requester', value: `${interaction.user}`, inline: true },
+                                { name: 'Duration', value: this.bot.utils.formatTime(track.playlist.duration, true), inline: true }
+                            ])
+                            .setFooter({ text: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
+                            .setTimestamp();
 
-                                await interaction.editReply({ embeds: [trackPlaylistAddEmbed] });
-                        };
-                    } catch (error) {
-                        player.destroy();
+                        await interaction.editReply({ embeds: [trackPlaylistAddEmbed] });
+                };
+            } catch (error) {
+                player.destroy();
 
-                        console.error(error);
-                        this.bot.utils.error(interaction, error);
-                    };
+                console.error(error);
+                this.bot.utils.error(interaction, error);
             };
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             return this.bot.utils.error(interaction, error);
         };

@@ -11,6 +11,7 @@ export default class interactionCreate extends Event {
     /**
      * 
      * @param {Interaction} interaction Interaction Created
+     * @returns Runs the Command
      */
     
     async EventRun(interaction) {

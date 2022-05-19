@@ -20,6 +20,7 @@ export default class voiceStateUpdate extends Event {
                 const player = this.bot.music.get(newState.guild.id);
 
                 if (!newState.channelId) {
+                    this.bot.trackCollectors.delete(newState.guild.id);
                     player ? player.destroy() : null;
                 } else {
                     player.voiceChannel = newState.channelId;

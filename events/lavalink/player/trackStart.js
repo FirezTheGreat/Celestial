@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder, Message } from "discord.js";
 import { Player } from "erela.js";
 import PlayerEvent from "../../../structures/PlayerEvent.js";
 
@@ -16,13 +16,6 @@ export default class trackStart extends PlayerEvent {
     async PlayerEventRun(player, track) {
         try {
             const text_channel = this.bot.channels.cache.get(player.textChannel);
-
-            const trackCollectorMessage = this.bot.trackCollectors.get(`${player.guild}_${track.track}`);
-            if (trackCollectorMessage && (player.trackRepeat || player.queueRepeat)) {
-                this.bot.trackCollectors.delete(track.track);
-
-                trackCollectorMessage.stop();
-            };
 
             const trackStartEmbed = new EmbedBuilder()
                 .setAuthor({ name: text_channel.guild.name, iconURL: text_channel.guild.iconURL() })
@@ -71,11 +64,10 @@ export default class trackStart extends PlayerEvent {
                         .setStyle(ButtonStyle.Primary)
                 ]);
 
-
             const trackMessage = await text_channel.send({ embeds: [trackStartEmbed], components: [trackEmbedPlayComponents, trackEmbedLoopComponents] });
             const trackCollector = trackMessage.createMessageComponentCollector({ filter: (message) => message.member.voice?.channelId === player.voiceChannel, componentType: ComponentType.Button });
 
-            this.bot.trackCollectors.set(`${player.guild}_${track.track}`, trackCollector);
+            this.bot.trackCollectors.set(player.guild, trackCollector);
 
             trackCollector.on('collect', async (interaction) => {
                 try {
@@ -149,11 +141,39 @@ export default class trackStart extends PlayerEvent {
                 };
             });
 
-            trackCollector.on('end', async () => {
+            trackCollector.on('end', async (_collected, reason) => {
                 try {
-                    trackMessage.deletable ? await trackMessage.delete().catch : null;
+                    this.bot.trackCollectors.delete(player.guild);
 
-                    this.bot.trackCollectors.delete(track.track);
+                    if (trackMessage.deletable) {
+                        if (player.trackRepeat || player.queueRepeat) {
+                            if (reason === 'stop') {
+                                player.setTrackRepeat(false);
+                                player.setQueueRepeat(false);
+                            };
+
+                            await trackMessage.delete();
+                        } else {
+                            await trackMessage.edit({
+                                components: [
+                                    new ActionRowBuilder()
+                                        .setComponents(
+                                            trackEmbedPlayComponents.components
+                                                ? trackEmbedPlayComponents.components.map((component) => ButtonBuilder.from(component).setDisabled(true))
+                                                : [ButtonBuilder.from(trackEmbedPlayComponents).setDisabled(true)]
+
+                                        ),
+                                    new ActionRowBuilder()
+                                        .setComponents(
+                                            trackEmbedLoopComponents.components
+                                                ? trackEmbedLoopComponents.components.map((component) => ButtonBuilder.from(component).setDisabled(true))
+                                                : [ButtonBuilder.from(trackEmbedLoopComponents).setDisabled(true)]
+
+                                        )
+                                ]
+                            });
+                        };
+                    };
                 } catch { };
             });
         } catch (error) {

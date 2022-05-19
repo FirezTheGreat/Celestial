@@ -9,9 +9,10 @@ export default class nodeConnect extends PlayerEvent {
     /**
      * 
      * @param {Node} node Node
+     * @returns Connection Status of Node
      */
 
-    async PlayerEventRun(node) {
-        console.log(`Connected to ${node.options.identifier}:${node.options.port}`);
+    PlayerEventRun(node) {
+        return console.log(`Connected to ${node.options.identifier}:${node.options.port}`);
     };
 };

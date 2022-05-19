@@ -158,16 +158,20 @@ export default class Util {
      */
 
     async error(interaction, error, custom = false, ephemeral = false) {
-        if (interaction.deferred && !interaction.replied) {
-            await interaction.editReply({ content: `An Error Occurred: \`${error.message}\`!` });
-            return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
-        } else if (interaction.replied) {
-            await interaction.followUp({ content: `An Error Occurred: \`${error.message}\`!` });
-            return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
-        } else {
-            await interaction.reply({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
-            return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
-        };
+        try {
+            if (interaction.deferred && !interaction.replied) {
+                await interaction.editReply({ content: `An Error Occurred: \`${error.message}\`!` });
+                return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
+            } else if (interaction.replied) {
+                await interaction.followUp({ content: `An Error Occurred: \`${error.message}\`!` });
+                return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
+            } else {
+                await interaction.reply({ content: `An Error Occurred: \`${error.message}\`!`, ephemeral });
+                return custom ? await interaction.followUp({ content: `Custom Error Message: ${custom}` }) : null;
+            };
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     /**
